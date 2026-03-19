@@ -1,4 +1,4 @@
-"""Integration tests -- require OPENAI_API_KEY to be set.
+"""Integration tests -- require ANTHROPIC_API_KEY to be set.
 
 Run with: pytest tests/test_feedback_integration.py -v
 
@@ -8,12 +8,15 @@ These tests make real API calls. Skip them in CI or when no key is available.
 import os
 
 import pytest
+from dotenv import load_dotenv
+
+load_dotenv()
 from app.feedback import get_feedback
 from app.models import FeedbackRequest
 
 pytestmark = pytest.mark.skipif(
-    not os.getenv("OPENAI_API_KEY"),
-    reason="OPENAI_API_KEY not set -- skipping integration tests",
+    not os.getenv("ANTHROPIC_API_KEY"),
+    reason="ANTHROPIC_API_KEY not set -- skipping integration tests",
 )
 
 VALID_ERROR_TYPES = {
