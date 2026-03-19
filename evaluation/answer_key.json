@@ -1,0 +1,104 @@
+Input = "生 人人 而 自由 平等, 在 尊嚴 和 權利 上 一律。"
+{
+  "corrected_sentence": "人人生而自由，在尊严和权利上一律平等。",
+  "is_correct": false,
+  "errors": [
+    {
+      "original": "生 人人",
+      "correction": "人人生",
+      "error_type": "word_order",
+      "explanation": "In Mandarin, the subject usually comes before the verb. '人人生而自由' means 'all people are born free,' so '人人' (everyone) must come before '生' (to be born)."
+    },
+    {
+      "original": "自由 平等",
+      "correction": "自由，在尊严和权利上一律平等",
+      "error_type": "structure",
+      "explanation": "The sentence needs a clear separation between clauses. '自由' (free) completes the first idea, and '一律平等' (equal) belongs to the second clause about rights and dignity."
+    },
+    {
+      "original": "一律 (at end of sentence)",
+      "correction": "一律平等",
+      "error_type": "grammar",
+      "explanation": "'一律' (uniformly) is an adverb and must come before what it modifies. It should appear before '平等' (equal), not at the end of the sentence."
+    }
+  ],
+  "difficulty": "B1"
+}
+
+Input = "Ei-te-dar o endereço novo em breve."
+
+{
+  "corrected_sentence": "Dar-te-ei o endereço novo em breve.",
+  "is_correct": false,
+  "errors": [
+    {
+      "original": "Ei-te-dar",
+      "correction": "Dar-te-ei",
+      "error_type": "word_order",
+      "explanation": "This construction uses mesoclisis, where the object pronoun 'te' is inserted inside a future tense verb form. The correct order is the verb infinitive ('dar') + pronoun ('te') + future ending ('ei'). 'Ei-te-dar' places the future ending first, which breaks the required structure."
+    }
+  ],
+  "difficulty": "C2"
+}
+
+Input = "가게에 가셨어요 가?"
+
+{
+  "corrected_sentence": "가게에 가셨어요?",
+  "is_correct": false,
+  "errors": [
+    {
+      "original": "가",
+      "correction": "",
+      "error_type": "grammar",
+      "explanation": "The polite question ending '-어요?' already marks this as a question. Adding '가' at the end is incorrect because it is a subject particle and cannot be used after a complete sentence."
+    }
+  ],
+  "difficulty": "A2"
+}
+
+Input = "Дом я тeбя нe вижy"
+{
+  "corrected_sentence": "Я тебя не вижу.",
+  "is_correct": false,
+  "errors": [
+    {
+      "original": "Дом",
+      "correction": "",
+      "error_type": "grammar",
+      "explanation": "'Дом' (house) is incorrectly added at the beginning without a preposition or proper grammatical role. To express location, Russian uses 'дома' (at home). As written, 'Дом' is not properly connected to the sentence and makes it ungrammatical."
+    }
+  ],
+  "difficulty": "A2"
+}
+
+Input = "Liebe deutsche ist für alle dasein"
+
+{
+  "corrected_sentence": "Liebe ist für alle da.",
+  "is_correct": false,
+  "errors": [
+    {
+      "original": "Liebe deutsche",
+      "correction": "Liebe",
+      "error_type": "grammar",
+      "explanation": "'Deutsche' is incorrectly added after 'Liebe'. It creates an invalid noun phrase. The sentence only needs 'Liebe' (love) as the subject."
+    },
+    {
+      "original": "dasein",
+      "correction": "da",
+      "error_type": "word_choice",
+      "explanation": "'Dasein' is a noun meaning 'existence', not the adverb 'da' (there). The sentence requires 'da' to express that love is there for everyone."
+    }
+  ],
+  "difficulty": "A2"
+}
+
+Input = "彼はやった。"
+
+{
+  "corrected_sentence": "彼はやった。",
+  "is_correct": true,
+  "errors": [],
+  "difficulty": "A2"
+}
