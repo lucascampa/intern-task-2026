@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /c/Users/lucas/Documents/intern-task-2026 -not -path */.git/* -type f -o -type d)",
+      "Skill(claude-api)",
+      "Skill(claude-api:*)",
+      "Bash(mv scripts/compare_models.py evaluation/compare_models.py)",
+      "Bash(rmdir scripts:*)"
+    ]
+  }
+}
