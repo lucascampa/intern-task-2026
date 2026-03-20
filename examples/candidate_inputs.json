@@ -20,7 +20,7 @@
           "original": "自由 平等",
           "correction": "自由，在尊严和权利上一律平等",
           "error_type": "grammar",
-          "explanation": "The sentence needs a clear separation between clauses. '自由' (free) completes the first idea, and '一律平等' (equal) belongs to the second clause about rights and dignity."
+          "explanation": "'平等' cannot simply be placed after '自由' as a separate word. In the correct sentence, '自由' finishes the first clause, but '平等' belongs with '一律' in the fixed predicate '一律平等'. Here, '平等' is detached from that predicate, so it is left without a proper grammatical role."
         },
         {
           "original": "一律 (at end of sentence)",
