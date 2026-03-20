@@ -91,3 +91,24 @@ async def test_japanese_particle():
     )
     assert result.is_correct is False
     assert any("に" in e.correction for e in result.errors)
+
+
+# ── Candidate tests ───────────────────────────────────────────────────────────
+
+
+@pytest.mark.asyncio
+async def test_chinese_word_order():
+    result = await get_feedback(
+        FeedbackRequest(
+            sentence="生 人人 而 自由 平等, 在 尊嚴 和 權利 上 一律。",
+            target_language="Chinese",
+            native_language="English",
+        )
+    )
+    assert result.is_correct is False
+    assert len(result.errors) >= 2
+    assert any(e.error_type == "word_order" for e in result.errors)
+    assert result.difficulty in VALID_DIFFICULTIES
+    for error in result.errors:
+        assert error.error_type in VALID_ERROR_TYPES
+        assert len(error.explanation) > 0
