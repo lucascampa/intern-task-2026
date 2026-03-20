@@ -1,9 +1,12 @@
 [
   {
-    "sentence": "生 人人 而 自由 平等, 在 尊嚴 和 權利 上 一律。",
-    "target_language": "Chinese",
-    "native_language": "English",
-    "expected": {
+    "description": "Chinese sentence with word order errors",
+    "request": {
+      "sentence": "生 人人 而 自由 平等, 在 尊嚴 和 權利 上 一律。",
+      "target_language": "Chinese",
+      "native_language": "English"
+    },
+    "expected_response": {
       "corrected_sentence": "人人生而自由，在尊严和权利上一律平等。",
       "is_correct": false,
       "errors": [
@@ -30,10 +33,13 @@
     }
   },
   {
-    "sentence": "Ei-te-dar o endereço novo em breve.",
-    "target_language": "Portuguese",
-    "native_language": "English",
-    "expected": {
+    "description": "Portuguese sentence with mesoclisis word order error",
+    "request": {
+      "sentence": "Ei-te-dar o endereço novo em breve.",
+      "target_language": "Portuguese",
+      "native_language": "English"
+    },
+    "expected_response": {
       "corrected_sentence": "Dar-te-ei o endereço novo em breve.",
       "is_correct": false,
       "errors": [
@@ -48,10 +54,13 @@
     }
   },
   {
-    "sentence": "가게에 가셨어요 가?",
-    "target_language": "Korean",
-    "native_language": "English",
-    "expected": {
+    "description": "Korean sentence with extra particle after question",
+    "request": {
+      "sentence": "가게에 가셨어요 가?",
+      "target_language": "Korean",
+      "native_language": "English"
+    },
+    "expected_response": {
       "corrected_sentence": "가게에 가셨어요?",
       "is_correct": false,
       "errors": [
@@ -66,10 +75,13 @@
     }
   },
   {
-    "sentence": "Дом я тeбя нe вижy",
-    "target_language": "Russian",
-    "native_language": "English",
-    "expected": {
+    "description": "Russian sentence with extra word at the beginning",
+    "request": {
+      "sentence": "Дом я тeбя нe вижy",
+      "target_language": "Russian",
+      "native_language": "English"
+    },
+    "expected_response": {
       "corrected_sentence": "Я тебя не вижу.",
       "is_correct": false,
       "errors": [
@@ -84,10 +96,13 @@
     }
   },
   {
-    "sentence": "Liebe deutsche ist für alle dasein",
-    "target_language": "German",
-    "native_language": "English",
-    "expected": {
+    "description": "German sentence with extra adjective and wrong word choice",
+    "request": {
+      "sentence": "Liebe deutsche ist für alle dasein",
+      "target_language": "German",
+      "native_language": "English"
+    },
+    "expected_response": {
       "corrected_sentence": "Liebe ist für alle da.",
       "is_correct": false,
       "errors": [
@@ -108,10 +123,13 @@
     }
   },
   {
-    "sentence": "彼はやった。",
-    "target_language": "Japanese",
-    "native_language": "English",
-    "expected": {
+    "description": "Correct Japanese sentence -- no errors",
+    "request": {
+      "sentence": "彼はやった。",
+      "target_language": "Japanese",
+      "native_language": "English"
+    },
+    "expected_response": {
       "corrected_sentence": "彼はやった。",
       "is_correct": true,
       "errors": [],

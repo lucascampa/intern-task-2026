@@ -82,9 +82,9 @@ def calc_cost(model: str, input_tokens: int, output_tokens: int) -> float:
 
 async def run_one(client: anthropic.AsyncAnthropic, model: str, test: dict) -> dict:
     user_message = (
-        f"Target language: {test['target_language']}\n"
-        f"Native language: {test['native_language']}\n"
-        f"Sentence: {test['sentence']}"
+        f"Target language: {test['request']['target_language']}\n"
+        f"Native language: {test['request']['native_language']}\n"
+        f"Sentence: {test['request']['sentence']}"
     )
 
     start = time.perf_counter()
@@ -111,9 +111,9 @@ async def run_one(client: anthropic.AsyncAnthropic, model: str, test: dict) -> d
         parse_error = str(e)
 
     cost = calc_cost(model, response.usage.input_tokens, response.usage.output_tokens)
-    expected = test["expected"]
+    expected = test["expected_response"]
 
-    # Derive expected error type from first error in answer key (if any)
+    # Derive expected error types from answer key (if any)
     expected_error_types = {e["error_type"] for e in expected.get("errors", [])}
 
     return {
@@ -156,7 +156,7 @@ async def main():
     results = []
 
     for test in test_cases:
-        print(f"\n── {test['target_language']}: {test['sentence'][:60]}")
+        print(f"\n── {test['request']['target_language']}: {test['request']['sentence'][:60]}")
         test_results = []
 
         for model in MODELS:
