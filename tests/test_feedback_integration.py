@@ -127,3 +127,64 @@ async def test_portuguese_mesoclisis():
     assert len(result.errors) >= 1
     assert any(e.error_type == "word_order" for e in result.errors)
     assert result.difficulty in {"C1", "C2"}
+
+
+@pytest.mark.asyncio
+async def test_korean_extra_word():
+    result = await get_feedback(
+        FeedbackRequest(
+            sentence="가게에 가셨어요 가?",
+            target_language="Korean",
+            native_language="English",
+        )
+    )
+    assert result.is_correct is False
+    assert len(result.errors) >= 1
+    assert any(e.error_type == "extra_word" for e in result.errors)
+    assert any(len(e.correction) == 0 for e in result.errors)
+    assert result.difficulty in VALID_DIFFICULTIES
+
+
+@pytest.mark.asyncio
+async def test_russian_extra_word():
+    result = await get_feedback(
+        FeedbackRequest(
+            sentence="Дом я тeбя нe вижy",
+            target_language="Russian",
+            native_language="English",
+        )
+    )
+    assert result.is_correct is False
+    assert len(result.errors) >= 1
+    assert any(e.error_type == "extra_word" for e in result.errors)
+    assert any(len(e.correction) == 0 for e in result.errors)
+    assert result.difficulty in VALID_DIFFICULTIES
+
+
+@pytest.mark.asyncio
+async def test_german_multiple_errors():
+    result = await get_feedback(
+        FeedbackRequest(
+            sentence="Liebe deutsche ist für alle dasein",
+            target_language="German",
+            native_language="English",
+        )
+    )
+    assert result.is_correct is False
+    assert len(result.errors) >= 2
+    assert len({e.error_type for e in result.errors}) >= 2
+    assert result.difficulty in VALID_DIFFICULTIES
+
+
+@pytest.mark.asyncio
+async def test_japanese_correct():
+    result = await get_feedback(
+        FeedbackRequest(
+            sentence="彼はやった。",
+            target_language="Japanese",
+            native_language="English",
+        )
+    )
+    assert result.is_correct is True
+    assert len(result.errors) == 0
+    assert result.difficulty in {"A1", "A2"}
