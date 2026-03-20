@@ -112,3 +112,18 @@ async def test_chinese_word_order():
     for error in result.errors:
         assert error.error_type in VALID_ERROR_TYPES
         assert len(error.explanation) > 0
+
+
+@pytest.mark.asyncio
+async def test_portuguese_mesoclisis():
+    result = await get_feedback(
+        FeedbackRequest(
+            sentence="Ei-te-dar o endereço novo em breve.",
+            target_language="Portuguese",
+            native_language="English",
+        )
+    )
+    assert result.is_correct is False
+    assert len(result.errors) >= 1
+    assert any(e.error_type == "word_order" for e in result.errors)
+    assert result.difficulty in {"C1", "C2"}
