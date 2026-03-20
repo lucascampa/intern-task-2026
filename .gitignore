@@ -14,6 +14,9 @@ build/
 venv/
 env/
 
+# Working notes
+NOTES.md
+
 # IDE
 .vscode/
 .idea/
