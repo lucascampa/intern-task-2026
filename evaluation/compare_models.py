@@ -1,11 +1,12 @@
 """
-Compare Haiku, Sonnet, and Opus on a set of test sentences.
+Compare Haiku, Sonnet, and Opus on the test sentences in answer_key.json.
 Records output, latency, and cost per request.
 
 Run with:
-    python scripts/compare_models.py
+    python evaluation/compare_models.py
 
-Results are saved to scripts/comparison_results.json
+Test cases are loaded from examples/candidate_inputs.json.
+Results are saved to evaluation/comparison_results.json
 """
 
 import asyncio
@@ -28,85 +29,12 @@ MODELS = [
 
 # Prices in USD per million tokens
 PRICING = {
-    "claude-haiku-4-5":   {"input": 1.00,  "output": 5.00},
-    "claude-sonnet-4-6":  {"input": 3.00,  "output": 15.00},
-    "claude-opus-4-6":    {"input": 15.00, "output": 75.00},
+    "claude-haiku-4-5":  {"input": 1.00,  "output": 5.00},
+    "claude-sonnet-4-6": {"input": 3.00,  "output": 15.00},
+    "claude-opus-4-6":   {"input": 15.00, "output": 75.00},
 }
 
-# ── Test sentences ────────────────────────────────────────────────────────────
-# Each has a known error and an expected correction you can verify.
-
-TEST_CASES = [
-    {
-        "description": "Portuguese – verb tense error (verifiable by user)",
-        "request": {
-            "sentence": "Eu fico em casa ontem porque estava doente.",
-            "target_language": "Portuguese",
-            "native_language": "English",
-        },
-        "known_error_type": "conjugation",
-        "expected_correction": "Eu fiquei em casa ontem porque estava doente.",
-        "notes": (
-            "'Fico' is present tense (I stay). "
-            "With 'ontem' (yesterday) it must be 'fiquei' (I stayed)."
-        ),
-    },
-    {
-        "description": "Korean – particle error (non-Latin script)",
-        "request": {
-            "sentence": "나는 학교을 갔어요.",
-            "target_language": "Korean",
-            "native_language": "English",
-        },
-        "known_error_type": "grammar",
-        "expected_correction": "나는 학교에 갔어요.",
-        "notes": (
-            "'을' is the object particle. "
-            "With 갔어요 (went), the location particle '에' is required."
-        ),
-    },
-    {
-        "description": "Russian – conjugation error (non-Latin script)",
-        "request": {
-            "sentence": "Я идёт в магазин.",
-            "target_language": "Russian",
-            "native_language": "English",
-        },
-        "known_error_type": "conjugation",
-        "expected_correction": "Я иду в магазин.",
-        "notes": (
-            "'Идёт' is 3rd person singular (he/she goes). "
-            "With 'Я' (I) it must be 'иду'."
-        ),
-    },
-    {
-        "description": "Chinese – extra word error (non-Latin script)",
-        "request": {
-            "sentence": "我是很高兴认识你。",
-            "target_language": "Chinese",
-            "native_language": "English",
-        },
-        "known_error_type": "extra_word",
-        "expected_correction": "我很高兴认识你。",
-        "notes": (
-            "'是' (to be) is not used before adjectives in Chinese. "
-            "The correct form omits 是."
-        ),
-    },
-    {
-        "description": "Spanish – correct sentence, no errors",
-        "request": {
-            "sentence": "Ayer fui al supermercado y compré leche y pan.",
-            "target_language": "Spanish",
-            "native_language": "English",
-        },
-        "known_error_type": None,
-        "expected_correction": "Ayer fui al supermercado y compré leche y pan.",
-        "notes": "Grammatically correct. Model should return is_correct=true.",
-    },
-]
-
-# ── Prompt (same as app/feedback.py) ─────────────────────────────────────────
+# ── Prompt (must match app/feedback.py) ──────────────────────────────────────
 
 SYSTEM_PROMPT = """\
 You are a language-learning assistant. A student is practicing writing in their \
@@ -153,11 +81,10 @@ def calc_cost(model: str, input_tokens: int, output_tokens: int) -> float:
 
 
 async def run_one(client: anthropic.AsyncAnthropic, model: str, test: dict) -> dict:
-    req = test["request"]
     user_message = (
-        f"Target language: {req['target_language']}\n"
-        f"Native language: {req['native_language']}\n"
-        f"Sentence: {req['sentence']}"
+        f"Target language: {test['target_language']}\n"
+        f"Native language: {test['native_language']}\n"
+        f"Sentence: {test['sentence']}"
     )
 
     start = time.perf_counter()
@@ -184,6 +111,10 @@ async def run_one(client: anthropic.AsyncAnthropic, model: str, test: dict) -> d
         parse_error = str(e)
 
     cost = calc_cost(model, response.usage.input_tokens, response.usage.output_tokens)
+    expected = test["expected"]
+
+    # Derive expected error type from first error in answer key (if any)
+    expected_error_types = {e["error_type"] for e in expected.get("errors", [])}
 
     return {
         "model": model,
@@ -193,30 +124,39 @@ async def run_one(client: anthropic.AsyncAnthropic, model: str, test: dict) -> d
         "cost_usd": round(cost, 6),
         "output": output,
         "parse_error": parse_error,
-        "caught_error": (
-            None if test["known_error_type"] is None
-            else (output is not None and not output.get("is_correct", True))
-        ),
-        "correct_sentence_match": (
+        # Did is_correct match?
+        "is_correct_match": (
             output is not None
-            and output.get("corrected_sentence") == test["expected_correction"]
+            and output.get("is_correct") == expected["is_correct"]
         ),
-        "error_type_correct": (
-            None if test["known_error_type"] is None or output is None
-            else any(
-                e.get("error_type") == test["known_error_type"]
-                for e in output.get("errors", [])
+        # Does corrected_sentence match expected?
+        "corrected_sentence_match": (
+            output is not None
+            and output.get("corrected_sentence") == expected["corrected_sentence"]
+        ),
+        # Did at least one error type match the answer key?
+        "error_type_match": (
+            None if not expected_error_types
+            else (
+                output is not None
+                and bool(
+                    {e.get("error_type") for e in output.get("errors", [])}
+                    & expected_error_types
+                )
             )
         ),
     }
 
 
 async def main():
+    answer_key_path = Path(__file__).parent.parent / "examples" / "candidate_inputs.json"
+    test_cases = json.loads(answer_key_path.read_text(encoding="utf-8"))
+
     client = anthropic.AsyncAnthropic()
     results = []
 
-    for test in TEST_CASES:
-        print(f"\n── {test['description']}")
+    for test in test_cases:
+        print(f"\n── {test['target_language']}: {test['sentence'][:60]}")
         test_results = []
 
         for model in MODELS:
@@ -226,14 +166,12 @@ async def main():
             print(
                 f"{result['latency_seconds']}s  "
                 f"${result['cost_usd']}  "
-                f"caught={result['caught_error']}  "
-                f"match={result['correct_sentence_match']}"
+                f"is_correct={result['is_correct_match']}  "
+                f"sentence={result['corrected_sentence_match']}  "
+                f"error_type={result['error_type_match']}"
             )
 
-        results.append({
-            "test": test,
-            "results": test_results,
-        })
+        results.append({"test": test, "results": test_results})
 
     # Save full results
     output_path = Path(__file__).parent / "comparison_results.json"
@@ -241,22 +179,25 @@ async def main():
     print(f"\nFull results saved to {output_path}")
 
     # Print summary table
-    print("\n── Summary ──────────────────────────────────────────────────────")
-    print(f"{'Model':<22} {'Avg Latency':>12} {'Total Cost':>12} {'Errors Caught':>14} {'Sentence Match':>15}")
-    print("-" * 80)
+    print("\n── Summary ──────────────────────────────────────────────────────────────")
+    print(f"{'Model':<22} {'Avg Latency':>12} {'Total Cost':>12} {'is_correct':>11} {'Sentence':>9} {'Error type':>11}")
+    print("-" * 82)
 
     for model in MODELS:
         model_results = [r for entry in results for r in entry["results"] if r["model"] == model]
         avg_latency = sum(r["latency_seconds"] for r in model_results) / len(model_results)
         total_cost = sum(r["cost_usd"] for r in model_results)
-        caught = [r for r in model_results if r["caught_error"] is True]
-        expected_catches = [r for r in model_results if r["caught_error"] is not None]
-        matches = sum(1 for r in model_results if r["correct_sentence_match"])
+        n = len(model_results)
+        is_correct_matches = sum(1 for r in model_results if r["is_correct_match"])
+        sentence_matches = sum(1 for r in model_results if r["corrected_sentence_match"])
+        type_checks = [r for r in model_results if r["error_type_match"] is not None]
+        type_matches = sum(1 for r in type_checks if r["error_type_match"])
         print(
             f"{model:<22} {avg_latency:>11.2f}s "
             f"${total_cost:>10.6f} "
-            f"{len(caught)}/{len(expected_catches):>12} "
-            f"{matches}/{len(model_results):>14}"
+            f"{is_correct_matches}/{n:>9} "
+            f"{sentence_matches}/{n:>7} "
+            f"{type_matches}/{len(type_checks):>9}"
         )
 
 
