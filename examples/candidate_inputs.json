@@ -25,7 +25,7 @@
         {
           "original": "一律 (at end of sentence)",
           "correction": "一律平等",
-          "error_type": "grammar",
+          "error_type": "word_order",
           "explanation": "'一律' (uniformly) is an adverb and must come before what it modifies. It should appear before '平等' (equal), not at the end of the sentence."
         }
       ],
