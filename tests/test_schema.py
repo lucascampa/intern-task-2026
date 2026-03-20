@@ -16,7 +16,11 @@ def load_schema(name: str) -> dict:
 
 
 def load_examples() -> list[dict]:
-    return json.loads((EXAMPLES_DIR / "sample_inputs.json").read_text())
+    return json.loads((EXAMPLES_DIR / "sample_inputs.json").read_text(encoding="utf-8"))
+
+
+def load_candidate_examples() -> list[dict]:
+    return json.loads((EXAMPLES_DIR / "candidate_inputs.json").read_text(encoding="utf-8"))
 
 
 class TestRequestSchema:
@@ -122,4 +126,14 @@ class TestExamplesMatchSchemas:
     def test_all_example_responses_valid(self):
         schema = load_schema("response.schema.json")
         for example in load_examples():
+            jsonschema.validate(example["expected_response"], schema)
+
+    def test_all_candidate_requests_valid(self):
+        schema = load_schema("request.schema.json")
+        for example in load_candidate_examples():
+            jsonschema.validate(example["request"], schema)
+
+    def test_all_candidate_responses_valid(self):
+        schema = load_schema("response.schema.json")
+        for example in load_candidate_examples():
             jsonschema.validate(example["expected_response"], schema)
