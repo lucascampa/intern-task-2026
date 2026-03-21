@@ -75,21 +75,27 @@
     }
   },
   {
-    "description": "Russian sentence with extra word at the beginning",
+    "description": "Russian sentence with extra word and capitalization error",
     "request": {
-      "sentence": "Дом я тeбя нe вижy",
+      "sentence": "Дом У меня́ есть сок, вода́ и пи́во.",
       "target_language": "Russian",
       "native_language": "English"
     },
     "expected_response": {
-      "corrected_sentence": "Я тебя не вижу.",
+      "corrected_sentence": "У меня́ есть сок, вода́ и пи́во.",
       "is_correct": false,
       "errors": [
         {
           "original": "Дом",
           "correction": "",
           "error_type": "extra_word",
-          "explanation": "'Дом' (house) is incorrectly added at the beginning without a preposition or proper grammatical role. To express location, Russian uses 'дома' (at home). As written, 'Дом' is not properly connected to the sentence and makes it ungrammatical."
+          "explanation": "'Дом' (house) is incorrectly added at the beginning without any grammatical connection to the rest of the sentence. It has no role in the structure and makes the sentence ungrammatical."
+        },
+        {
+          "original": "У",
+          "correction": "у",
+          "error_type": "capitalization",
+          "explanation": "'У' is capitalized only when it begins the sentence. After adding 'Дом' before it, this word is no longer sentence-initial, so it should be lowercase."
         }
       ],
       "difficulty": "A2"
