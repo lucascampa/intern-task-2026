@@ -173,9 +173,11 @@ async def main():
 
         results.append({"test": test, "results": test_results})
 
-    # Save full results
-    output_path = Path(__file__).parent / "comparison_results.json"
-    output_path.write_text(json.dumps(results, ensure_ascii=False, indent=2))
+    # Save full results with timestamp
+    from datetime import datetime
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H%M")
+    output_path = Path(__file__).parent / f"results_{timestamp}.json"
+    output_path.write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"\nFull results saved to {output_path}")
 
     # Print summary table
