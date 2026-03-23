@@ -149,7 +149,7 @@ async def test_korean_extra_word():
 async def test_russian_extra_word():
     result = await get_feedback(
         FeedbackRequest(
-            sentence="Дом я тeбя нe вижy",
+            sentence="Дом У меня́ есть сок, вода́ и пи́во.",
             target_language="Russian",
             native_language="English",
         )

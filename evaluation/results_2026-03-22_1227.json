@@ -1,0 +1,634 @@
+[
+  {
+    "test": {
+      "description": "Chinese sentence with word order errors",
+      "request": {
+        "sentence": "生 人人 而 自由 平等, 在 尊嚴 和 權利 上 一律。",
+        "target_language": "Chinese",
+        "native_language": "English"
+      },
+      "expected_response": {
+        "corrected_sentence": "人人生而自由，在尊严和权利上一律平等。",
+        "is_correct": false,
+        "errors": [
+          {
+            "original": "生 人人",
+            "correction": "人人生",
+            "error_type": "word_order",
+            "explanation": "In Mandarin, the subject usually comes before the verb. '人人生而自由' means 'all people are born free,' so '人人' (everyone) must come before '生' (to be born)."
+          },
+          {
+            "original": "自由 平等",
+            "correction": "自由，在尊严和权利上一律平等",
+            "error_type": "grammar",
+            "explanation": "'平等' cannot simply be placed after '自由' as a separate word. In the correct sentence, '自由' finishes the first clause, but '平等' belongs with '一律' in the fixed predicate '一律平等'. Here, '平等' is detached from that predicate, so it is left without a proper grammatical role."
+          },
+          {
+            "original": "一律 (at end of sentence)",
+            "correction": "一律平等",
+            "error_type": "word_order",
+            "explanation": "'一律' (uniformly) is an adverb and must come before what it modifies. It should appear before '平等' (equal), not at the end of the sentence."
+          }
+        ],
+        "difficulty": "B1"
+      }
+    },
+    "results": [
+      {
+        "model": "claude-haiku-4-5",
+        "latency_seconds": 2.9,
+        "input_tokens": 430,
+        "output_tokens": 262,
+        "cost_usd": 0.00174,
+        "output": {
+          "corrected_sentence": "生而人人自由平等，在尊嚴和權利上一律。",
+          "is_correct": false,
+          "errors": [
+            {
+              "original": "生 人人 而",
+              "correction": "生而人人",
+              "error_type": "word_order",
+              "explanation": "The phrase should be '生而人人' (born equal as humans) rather than '生 人人 而'. The character '而' (and/thus) should come immediately after '生' to form the set phrase '生而' (born)."
+            },
+            {
+              "original": "一律",
+              "correction": "一律平等",
+              "error_type": "missing_word",
+              "explanation": "The sentence needs '平等' (equal) after '一律' to complete the meaning: '在尊嚴和權利上一律平等' (equal in dignity and rights)."
+            }
+          ],
+          "difficulty": "B2"
+        },
+        "parse_error": null,
+        "is_correct_match": true,
+        "corrected_sentence_match": false,
+        "error_type_match": true
+      },
+      {
+        "model": "claude-sonnet-4-6",
+        "latency_seconds": 7.41,
+        "input_tokens": 431,
+        "output_tokens": 356,
+        "cost_usd": 0.006633,
+        "output": {
+          "corrected_sentence": "人人生而自由平等，在尊嚴和權利上一律。",
+          "is_correct": false,
+          "errors": [
+            {
+              "original": "生 人人 而 自由 平等",
+              "correction": "人人生而自由平等",
+              "error_type": "word_order",
+              "explanation": "The correct fixed phrase is '人人生而自由平等' — '人人' (everyone) comes first as the subject, followed by '生而' (born). Separating these words and reordering them breaks the natural flow of this well-known expression."
+            },
+            {
+              "original": "一律。",
+              "correction": "一律平等。",
+              "error_type": "missing_word",
+              "explanation": "The sentence ends abruptly with '一律' (equally/uniformly), but it needs a predicate complement to complete the meaning. The standard phrasing is '一律平等' (equal in all respects), or alternatively '均等' could be used."
+            },
+            {
+              "original": ",",
+              "correction": "，",
+              "error_type": "punctuation",
+              "explanation": "In Chinese writing, you should use the full-width Chinese comma '，' instead of the half-width English comma ','."
+            }
+          ],
+          "difficulty": "B2"
+        },
+        "parse_error": null,
+        "is_correct_match": true,
+        "corrected_sentence_match": false,
+        "error_type_match": true
+      },
+      {
+        "model": "claude-opus-4-6",
+        "latency_seconds": 6.26,
+        "input_tokens": 431,
+        "output_tokens": 319,
+        "cost_usd": 0.03039,
+        "output": {
+          "corrected_sentence": "人人生而自由平等，在尊严和权利上一律平等。",
+          "is_correct": false,
+          "errors": [
+            {
+              "original": "生 人人",
+              "correction": "人人生",
+              "error_type": "word_order",
+              "explanation": "The subject '人人' (everyone) should come before the verb '生' (born). The correct phrase is '人人生而自由' — 'Everyone is born free.'"
+            },
+            {
+              "original": "自由 平等, 在",
+              "correction": "自由平等，在",
+              "error_type": "punctuation",
+              "explanation": "In Chinese, a full-width comma '，' should be used instead of a half-width comma ','."
+            },
+            {
+              "original": "上 一律",
+              "correction": "上一律平等",
+              "error_type": "missing_word",
+              "explanation": "'一律' (uniformly) needs an adjective to complete the meaning. The phrase should be '一律平等' (uniformly equal). Without '平等', the sentence is incomplete and lacks its predicate."
+            }
+          ],
+          "difficulty": "B2"
+        },
+        "parse_error": null,
+        "is_correct_match": true,
+        "corrected_sentence_match": false,
+        "error_type_match": true
+      }
+    ]
+  },
+  {
+    "test": {
+      "description": "Portuguese sentence with mesoclisis word order error",
+      "request": {
+        "sentence": "Ei-te-dar o endereço novo em breve.",
+        "target_language": "Portuguese",
+        "native_language": "English"
+      },
+      "expected_response": {
+        "corrected_sentence": "Dar-te-ei o endereço novo em breve.",
+        "is_correct": false,
+        "errors": [
+          {
+            "original": "Ei-te-dar",
+            "correction": "Dar-te-ei",
+            "error_type": "word_order",
+            "explanation": "This construction uses mesoclisis, where the object pronoun 'te' is inserted inside a future tense verb form. The correct order is the verb infinitive ('dar') + pronoun ('te') + future ending ('ei'). 'Ei-te-dar' places the future ending first, which breaks the required structure."
+          }
+        ],
+        "difficulty": "C2"
+      }
+    },
+    "results": [
+      {
+        "model": "claude-haiku-4-5",
+        "latency_seconds": 1.65,
+        "input_tokens": 412,
+        "output_tokens": 173,
+        "cost_usd": 0.001277,
+        "output": {
+          "corrected_sentence": "Dar-te-ei o endereço novo em breve.",
+          "is_correct": false,
+          "errors": [
+            {
+              "original": "Ei-te-dar",
+              "correction": "Dar-te-ei",
+              "error_type": "word_order",
+              "explanation": "In Portuguese, when using the future tense with an enclitic pronoun (object pronoun attached to the verb), the pronoun must come after the infinitive stem. The correct structure is infinitive + pronoun + future ending: dar-te-ei (I will give you)."
+            }
+          ],
+          "difficulty": "B1"
+        },
+        "parse_error": null,
+        "is_correct_match": true,
+        "corrected_sentence_match": true,
+        "error_type_match": true
+      },
+      {
+        "model": "claude-sonnet-4-6",
+        "latency_seconds": 5.15,
+        "input_tokens": 413,
+        "output_tokens": 197,
+        "cost_usd": 0.004194,
+        "output": {
+          "corrected_sentence": "Eu te darei o endereço novo em breve.",
+          "is_correct": false,
+          "errors": [
+            {
+              "original": "Ei-te-dar",
+              "correction": "Eu te darei",
+              "error_type": "conjugation",
+              "explanation": "The future tense in Portuguese uses conjugated verb forms. 'Dar' needs to be conjugated as 'darei' (I will give) rather than left in the infinitive. 'Ei' is not a standard Portuguese word in this context — you may be thinking of the mesoclitic future construction (like 'dar-te-ei'), which is very formal/archaic and structured differently."
+            }
+          ],
+          "difficulty": "B1"
+        },
+        "parse_error": null,
+        "is_correct_match": true,
+        "corrected_sentence_match": false,
+        "error_type_match": false
+      },
+      {
+        "model": "claude-opus-4-6",
+        "latency_seconds": 4.43,
+        "input_tokens": 413,
+        "output_tokens": 182,
+        "cost_usd": 0.019845,
+        "output": {
+          "corrected_sentence": "Hei de te dar o endereço novo em breve.",
+          "is_correct": false,
+          "errors": [
+            {
+              "original": "Ei-te-dar",
+              "correction": "Hei de te dar",
+              "error_type": "grammar",
+              "explanation": "The future construction with 'haver' requires 'hei de' + infinitive. The correct first-person form is 'hei' (not 'ei'), and the structure is 'hei de + infinitive.' The pronoun 'te' is placed before the infinitive. So it becomes 'Hei de te dar.'"
+            }
+          ],
+          "difficulty": "B1"
+        },
+        "parse_error": null,
+        "is_correct_match": true,
+        "corrected_sentence_match": false,
+        "error_type_match": false
+      }
+    ]
+  },
+  {
+    "test": {
+      "description": "Korean sentence with extra particle after question",
+      "request": {
+        "sentence": "가게에 가셨어요 가?",
+        "target_language": "Korean",
+        "native_language": "English"
+      },
+      "expected_response": {
+        "corrected_sentence": "가게에 가셨어요?",
+        "is_correct": false,
+        "errors": [
+          {
+            "original": "가",
+            "correction": "",
+            "error_type": "extra_word",
+            "explanation": "The polite question ending '-어요?' already marks this as a question. Adding '가' at the end is incorrect because it is a subject particle and cannot be used after a complete sentence."
+          }
+        ],
+        "difficulty": "A2"
+      }
+    },
+    "results": [
+      {
+        "model": "claude-haiku-4-5",
+        "latency_seconds": 1.84,
+        "input_tokens": 410,
+        "output_tokens": 176,
+        "cost_usd": 0.00129,
+        "output": {
+          "corrected_sentence": "가게에 가셨어요?",
+          "is_correct": false,
+          "errors": [
+            {
+              "original": "가게에 가셨어요 가?",
+              "correction": "가게에 가셨어요?",
+              "error_type": "extra_word",
+              "explanation": "You have an extra '가' at the end of the sentence. When you already use the question mark '?', you don't need to add '가' (which is a particle used in casual questions). Remove the space and extra '가' to make it a proper question."
+            }
+          ],
+          "difficulty": "A2"
+        },
+        "parse_error": null,
+        "is_correct_match": true,
+        "corrected_sentence_match": true,
+        "error_type_match": true
+      },
+      {
+        "model": "claude-sonnet-4-6",
+        "latency_seconds": 4.44,
+        "input_tokens": 411,
+        "output_tokens": 160,
+        "cost_usd": 0.003633,
+        "output": {
+          "corrected_sentence": "가게에 가셨어요?",
+          "is_correct": false,
+          "errors": [
+            {
+              "original": "가셨어요 가?",
+              "correction": "가셨어요?",
+              "error_type": "extra_word",
+              "explanation": "In Korean, you don't add '가' at the end of a sentence to make it a question. The question mark (?) and the sentence-ending form '~요' already make it a question. Simply end with '가셨어요?'."
+            }
+          ],
+          "difficulty": "A2"
+        },
+        "parse_error": null,
+        "is_correct_match": true,
+        "corrected_sentence_match": true,
+        "error_type_match": true
+      },
+      {
+        "model": "claude-opus-4-6",
+        "latency_seconds": 4.36,
+        "input_tokens": 411,
+        "output_tokens": 173,
+        "cost_usd": 0.01914,
+        "output": {
+          "corrected_sentence": "가게에 가셨어요?",
+          "is_correct": false,
+          "errors": [
+            {
+              "original": "가셨어요 가?",
+              "correction": "가셨어요?",
+              "error_type": "extra_word",
+              "explanation": "In Korean, you don't need to add '가' at the end to form a question. The sentence-ending '요' with a question mark (or rising intonation) already makes it a question. You might be thinking of a question particle, but '가셨어요?' is already complete on its own."
+            }
+          ],
+          "difficulty": "A2"
+        },
+        "parse_error": null,
+        "is_correct_match": true,
+        "corrected_sentence_match": true,
+        "error_type_match": true
+      }
+    ]
+  },
+  {
+    "test": {
+      "description": "Russian sentence with extra word and capitalization error",
+      "request": {
+        "sentence": "Дом У меня́ есть сок, вода́ и пи́во.",
+        "target_language": "Russian",
+        "native_language": "English"
+      },
+      "expected_response": {
+        "corrected_sentence": "У меня́ есть сок, вода́ и пи́во.",
+        "is_correct": false,
+        "errors": [
+          {
+            "original": "Дом",
+            "correction": "",
+            "error_type": "extra_word",
+            "explanation": "'Дом' (house) is incorrectly added at the beginning without any grammatical connection to the rest of the sentence. It has no role in the structure and makes the sentence ungrammatical."
+          },
+          {
+            "original": "У",
+            "correction": "у",
+            "error_type": "capitalization",
+            "explanation": "'У' is capitalized only when it begins the sentence. After adding 'Дом' before it, this word is no longer sentence-initial, so it should be lowercase."
+          }
+        ],
+        "difficulty": "A2"
+      }
+    },
+    "results": [
+      {
+        "model": "claude-haiku-4-5",
+        "latency_seconds": 1.58,
+        "input_tokens": 420,
+        "output_tokens": 195,
+        "cost_usd": 0.001395,
+        "output": {
+          "corrected_sentence": "У меня́ есть сок, вода́ и пи́во.",
+          "is_correct": false,
+          "errors": [
+            {
+              "original": "Дом У меня́ есть сок, вода́ и пи́во.",
+              "correction": "У меня́ есть сок, вода́ и пи́во.",
+              "error_type": "extra_word",
+              "explanation": "The word 'Дом' (house) doesn't belong in this sentence and appears to be accidentally added. The sentence means 'I have juice, water, and beer,' and 'дом' disrupts the meaning."
+            }
+          ],
+          "difficulty": "A1"
+        },
+        "parse_error": null,
+        "is_correct_match": true,
+        "corrected_sentence_match": true,
+        "error_type_match": true
+      },
+      {
+        "model": "claude-sonnet-4-6",
+        "latency_seconds": 9.79,
+        "input_tokens": 421,
+        "output_tokens": 138,
+        "cost_usd": 0.003333,
+        "output": {
+          "corrected_sentence": "У меня́ есть сок, вода́ и пи́во.",
+          "is_correct": false,
+          "errors": [
+            {
+              "original": "Дом",
+              "correction": "",
+              "error_type": "extra_word",
+              "explanation": "The word 'Дом' (house/home) doesn't belong in this sentence — it appears to have been added by mistake. The sentence is complete without it."
+            }
+          ],
+          "difficulty": "A1"
+        },
+        "parse_error": null,
+        "is_correct_match": true,
+        "corrected_sentence_match": true,
+        "error_type_match": true
+      },
+      {
+        "model": "claude-opus-4-6",
+        "latency_seconds": 3.71,
+        "input_tokens": 421,
+        "output_tokens": 157,
+        "cost_usd": 0.01809,
+        "output": {
+          "corrected_sentence": "У меня́ есть сок, вода́ и пи́во.",
+          "is_correct": false,
+          "errors": [
+            {
+              "original": "Дом У меня́",
+              "correction": "У меня́",
+              "error_type": "extra_word",
+              "explanation": "The word «Дом» (house) at the beginning doesn't belong here — it doesn't connect grammatically or logically to the rest of the sentence. It looks like it may have been left in by accident."
+            }
+          ],
+          "difficulty": "A1"
+        },
+        "parse_error": null,
+        "is_correct_match": true,
+        "corrected_sentence_match": true,
+        "error_type_match": true
+      }
+    ]
+  },
+  {
+    "test": {
+      "description": "German sentence with extra adjective and wrong word choice",
+      "request": {
+        "sentence": "Liebe deutsche ist für alle dasein",
+        "target_language": "German",
+        "native_language": "English"
+      },
+      "expected_response": {
+        "corrected_sentence": "Liebe ist für alle da.",
+        "is_correct": false,
+        "errors": [
+          {
+            "original": "Liebe deutsche",
+            "correction": "Liebe",
+            "error_type": "grammar",
+            "explanation": "'Deutsche' is incorrectly added after 'Liebe'. It creates an invalid noun phrase. The sentence only needs 'Liebe' (love) as the subject."
+          },
+          {
+            "original": "dasein",
+            "correction": "da",
+            "error_type": "word_choice",
+            "explanation": "'Dasein' is a noun meaning 'existence', not the adverb 'da' (there). The sentence requires 'da' to express that love is there for everyone."
+          }
+        ],
+        "difficulty": "A2"
+      }
+    },
+    "results": [
+      {
+        "model": "claude-haiku-4-5",
+        "latency_seconds": 1.91,
+        "input_tokens": 406,
+        "output_tokens": 211,
+        "cost_usd": 0.001461,
+        "output": {
+          "corrected_sentence": "Liebe Deutsche ist für alle da.",
+          "is_correct": false,
+          "errors": [
+            {
+              "original": "deutsche",
+              "correction": "Deutsche",
+              "error_type": "capitalization",
+              "explanation": "When 'deutsche' is used as a noun (meaning 'German people'), it must be capitalized in German."
+            },
+            {
+              "original": "dasein",
+              "correction": "da",
+              "error_type": "word_choice",
+              "explanation": "'Dasein' means 'existence' or 'to exist,' but the idiomatic phrase you want is 'da sein' (to be there). In this context, 'da' alone is correct and more concise."
+            }
+          ],
+          "difficulty": "A2"
+        },
+        "parse_error": null,
+        "is_correct_match": true,
+        "corrected_sentence_match": false,
+        "error_type_match": true
+      },
+      {
+        "model": "claude-sonnet-4-6",
+        "latency_seconds": 4.79,
+        "input_tokens": 407,
+        "output_tokens": 239,
+        "cost_usd": 0.004806,
+        "output": {
+          "corrected_sentence": "Liebe ist für alle da.",
+          "is_correct": false,
+          "errors": [
+            {
+              "original": "deutsche",
+              "correction": "",
+              "error_type": "extra_word",
+              "explanation": "'Deutsche' means 'German (people)' and doesn't belong in this sentence — 'Liebe' (love) already stands alone as the subject without needing an adjective here."
+            },
+            {
+              "original": "dasein",
+              "correction": "da.",
+              "error_type": "word_choice",
+              "explanation": "'Dasein' is a noun meaning 'existence' or 'being.' The separable verb you want is 'da sein' (written as two words), but in this context just 'da' works as an adverb meaning 'there/available.' The sentence means 'Love is there for everyone.'"
+            }
+          ],
+          "difficulty": "A2"
+        },
+        "parse_error": null,
+        "is_correct_match": true,
+        "corrected_sentence_match": true,
+        "error_type_match": true
+      },
+      {
+        "model": "claude-opus-4-6",
+        "latency_seconds": 6.9,
+        "input_tokens": 407,
+        "output_tokens": 301,
+        "cost_usd": 0.02868,
+        "output": {
+          "corrected_sentence": "Liebe Deutsche ist für alle da.",
+          "is_correct": false,
+          "errors": [
+            {
+              "original": "deutsche",
+              "correction": "Deutsche",
+              "error_type": "spelling",
+              "explanation": "When used as a noun (meaning 'German people/the German language'), 'Deutsche' needs to be capitalized in German, since all nouns are capitalized."
+            },
+            {
+              "original": "dasein",
+              "correction": "da.",
+              "error_type": "word_choice",
+              "explanation": "'Dasein' is a noun meaning 'existence.' The expression you're looking for is 'da sein' (to be there/to exist for someone), and in this sentence structure with 'ist,' you just need 'da' — the verb 'sein' is already expressed by 'ist.' So: 'ist für alle da.'"
+            },
+            {
+              "original": "dasein",
+              "correction": "da.",
+              "error_type": "punctuation",
+              "explanation": "The sentence is missing a period at the end. German sentences should end with proper punctuation."
+            }
+          ],
+          "difficulty": "A2"
+        },
+        "parse_error": null,
+        "is_correct_match": true,
+        "corrected_sentence_match": false,
+        "error_type_match": true
+      }
+    ]
+  },
+  {
+    "test": {
+      "description": "Correct Japanese sentence -- no errors",
+      "request": {
+        "sentence": "彼はやった。",
+        "target_language": "Japanese",
+        "native_language": "English"
+      },
+      "expected_response": {
+        "corrected_sentence": "彼はやった。",
+        "is_correct": true,
+        "errors": [],
+        "difficulty": "A2"
+      }
+    },
+    "results": [
+      {
+        "model": "claude-haiku-4-5",
+        "latency_seconds": 0.68,
+        "input_tokens": 404,
+        "output_tokens": 51,
+        "cost_usd": 0.000659,
+        "output": {
+          "corrected_sentence": "彼はやった。",
+          "is_correct": true,
+          "errors": [],
+          "difficulty": "A1"
+        },
+        "parse_error": null,
+        "is_correct_match": true,
+        "corrected_sentence_match": true,
+        "error_type_match": null
+      },
+      {
+        "model": "claude-sonnet-4-6",
+        "latency_seconds": 2.27,
+        "input_tokens": 405,
+        "output_tokens": 31,
+        "cost_usd": 0.00168,
+        "output": {
+          "corrected_sentence": "彼はやった。",
+          "is_correct": true,
+          "errors": [],
+          "difficulty": "A1"
+        },
+        "parse_error": null,
+        "is_correct_match": true,
+        "corrected_sentence_match": true,
+        "error_type_match": null
+      },
+      {
+        "model": "claude-opus-4-6",
+        "latency_seconds": 2.0,
+        "input_tokens": 405,
+        "output_tokens": 31,
+        "cost_usd": 0.0084,
+        "output": {
+          "corrected_sentence": "彼はやった。",
+          "is_correct": true,
+          "errors": [],
+          "difficulty": "A1"
+        },
+        "parse_error": null,
+        "is_correct_match": true,
+        "corrected_sentence_match": true,
+        "error_type_match": null
+      }
+    ]
+  }
+]

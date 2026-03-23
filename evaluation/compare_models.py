@@ -148,7 +148,7 @@ async def run_one(client: anthropic.AsyncAnthropic, model: str, test: dict) -> d
     }
 
 
-async def main():
+async def main(language_filter=None):
     answer_key_path = Path(__file__).parent.parent / "examples" / "candidate_inputs.json"
     test_cases = json.loads(answer_key_path.read_text(encoding="utf-8"))
 
@@ -204,4 +204,8 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--language", help="Run only the test case for this language (e.g. Russian)")
+    args = parser.parse_args()
+    asyncio.run(main(language_filter=args.language))

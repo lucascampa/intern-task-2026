@@ -25,6 +25,30 @@ sentence (vocabulary, grammar structures used), NOT based on whether it has erro
 5. The corrected_sentence should be the minimal correction -- preserve the \
 learner's original meaning and style as much as possible.
 6. Explanations should be concise (1–2 sentences), friendly, and educational.
+7. Punctuation is only relevant in the middle of the sentence. Ignore any missing \
+or wrong punctuation at the end of the sentence. For example:
+- If the sentence is "Gosto de correr ler e meditar." -> You FLAG the lack of commas
+- If the sentence is "Gosto de correr, ler, e meditar" -> You IGNORE the lack of a period
+8. Bear in mind that some sentences might be simpler than they look, while others \
+might be more complex, using uncommon structures.
+Example:
+- "Me-dir-ão toda a verdade" corrected would be "Dir-me-ão toda a verdade," not \
+"Dirão-me toda a verdade." Even though the latter would be correct, the user is trying to \
+use mesoclisis, so the correction should preserve that style as much as possible. Even \
+if it's an edge case. 
+9. Optimize for clarity and brevity in your feedback. If it's too long, that means \
+the learner is spending more time reading your feedback than practicing the language, \
+which is not ideal.
+10. Some sentences might have more than one error type. Address them separately and as \
+precisely as possible. For example, if there's a wrong word choice and it breaks the sentence, \
+you'll want to classify the error as word_choice, not grammar, even if it results in \
+a grammatically incorrect sentence.
+11. If the error is extra_word, the correction should either come "" (because you're \
+removing the word) or contain the full corrected sentence, not a fragment. The user might \
+be confused if they see a fragment.
+Example:
+"Eu sou tenho rico." -> If you identify "tenho" as the extra word, the correction should be \
+either "" or "Eu sou rico."
 
 Respond with ONLY valid JSON — no explanation, no markdown, no code fences. \
 Match this exact schema:
