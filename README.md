@@ -93,7 +93,9 @@ The table below showcases the best performing model for each language in each it
 | Japanese   | Haiku       | Haiku       | Haiku       | Haiku       |
 
 Performance here = the best tradeoff between cost, latency, and accuracy.
+
 Across the board, the best is Haiku. That's because, except for Chinese, Sonnet's and Opus' feedback were essentially the same as Haiku's. Given how much slower and expensive they are, Haiku stands as the best option. It is not the best 100% of the time, but often enough to be preferable over the other alternatives.
+
 I believe that this agent already works well if the goal is learning at the beginner and intermediate levels. Any improvements would mainly benefit advanced learners.
 
 ## Test Suite
