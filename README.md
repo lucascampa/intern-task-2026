@@ -3,7 +3,9 @@
 ## Overview
 
 This is a language learning API, more specifically built for text correction. It's built using FastAPI and Anthropic's models.
+
 The user inputs a sentence in the language they're learning, the name of the language, and their native language. The API returns the corrected version of the sentence and a feedback.
+
 This repository contains files pertaining the agent itself, a few test cases, as well as a model comparison.
 
 ## Design Decisions
