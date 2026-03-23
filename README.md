@@ -75,9 +75,9 @@ In a nutshell: the models optimize for a "most natural native sentence" rather t
 - **Latency** (seconds)
 - **Token usage** (input and output)
 - **Cost** (USD, calculated from fixed per-model pricing)
-- **`is_correct_match`** — whether the model's `is_correct` flag matched the answer key (strict)
-- **`corrected_sentence_match`** — whether the model's corrected sentence matched the answer key exactly (strict)
-- **`error_type_match`** — whether any of the model's error types overlapped with the answer key's (lenient)
+- **`is_correct_match`**: whether the model's `is_correct` flag matched the answer key (strict)
+- **`corrected_sentence_match`**: whether the model's corrected sentence matched the answer key exactly (strict)
+- **`error_type_match`**: whether any of the model's error types overlapped with the answer key's (lenient)
 
 Results are saved to timestamped JSON files under `evaluation/`. Four runs were performed: a baseline, a second after fixing a malformed test sentence, and two post-prompt engineering rounds.
 
