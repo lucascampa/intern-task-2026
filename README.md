@@ -3,14 +3,14 @@
 ## Overview
 
 This is a language learning API, more specifically built for text correction. It's built using FastAPI and Anthropic's models.
-The user inputs a sentence in the language they're learning, the name of the language, and their native language. The API returns the corrected version  of the sentence and a feedback.
+The user inputs a sentence in the language they're learning, the name of the language, and their native language. The API returns the corrected version of the sentence and a feedback.
 This repository contains files pertaining the agent itself, a few test cases, as well as a model comparison.
 
 ## Design Decisions
 
 ### LLM Provider
 
-I switched from OpenAI to Anthropic.
+Switched from OpenAI to Anthropic.
 From my personal use, OAI's models are good enough to consumers, but not necessarily the best for business. Moreover, a popular opinion is that Anthropic's models are better suited for B2B products. So, following that simple heuristic, I decided to switch to Anthropic.
 
 ### Model Choice
@@ -25,8 +25,9 @@ The choice took into consideration accuracy of the responses, latency, and cost.
 ### Prompt Design
 
 The original prompt gives context about what the LLM should do, as well as six rules to follow:
+
 1. Handle the correct-sentence case (is_correct=true, empty errors, original sentence)
-2. For each error: identify original text, provide correction, classify type, explain in native 3.language
+2. For each error: identify original text, provide correction, classify type, explain in the native language
 3. Constrain error types to the 12 allowed values
 4. Assign CEFR difficulty based on sentence complexity, not error presence
 5. Minimal correction — preserve the learner's voice
@@ -35,12 +36,14 @@ The original prompt gives context about what the LLM should do, as well as six r
 Before the comparison runs, one early fix was also needed: the model was wrapping its JSON output in markdown fences (` ```json ... ``` `), which broke parsing. An explicit instruction to return plain JSON only was added to the prompt.
 
 I observed a few issues:
+
 - Verbosity in the answers
 - Lack of precision in classifying errors (e.g. often the sentence had an extra word, and instead of labeling the error as `extra_word` it would label it as `grammar`)
 - It would correct punctuation at the end of the sentence. Punctuation is a core part of grammar, and it should be flagged in the middle of a sentence. But at the end it's irrelevant for learning
 - Inconsistency in presenting the corrected sentence when there was an extra word error. At times it would return "", others the full sentence without the extra word, or just a section. The first two work, but the third can lead to confusion
 
 I added five other rules:
+
 7. Ignore punctuation at the end, with two examples
 8. A reminder to keep in mind some sentences might be more or less complex than they might seem at first, with an example
 9. Another instruction highlighting the importance of brevity
@@ -51,8 +54,8 @@ Prompt engineering can only go so far. Most of the limitations are at the model 
 
 ### Known Limitations
 
-- *Portuguese mesoclisis*: except for Haiku in the last iteration, all the models would consistently fail at it. It's not that they can't recognize it - Sonnet even recognizes it at the last iteration, but its simplicity bias makes it dismiss it "you may be thinking of the mesoclitic future construction (like 'dar-te-ei'), which is very formal/archaic and structured differently."
-- The Chinese sentence contains several mistakes, which made the feedbacks verbose. I'm not a speaker, so it was a challenge to even verify accuracy and consistency of the explanations
+- *Portuguese mesoclisis*: except for Haiku in the last iteration, all the models would consistently fail at it. It's not that they can't recognize it - Sonnet even recognizes it at the last iteration, but its simplicity bias makes it dismiss it: "you may be thinking of the mesoclitic future construction (like 'dar-te-ei'), which is very formal/archaic and structured differently."
+- The Chinese sentence contains several mistakes, which made the feedback verbose. I'm not a speaker, so it was a challenge to even verify accuracy and consistency of the explanations
 - *German*: inconsistent across runs, and another glaring example of the models being "lazy" about removing words. The wrong sentence has "Deutsche" as an extra word, completely breaking the sentence's meaning. Be it Haiku, Sonnet, or Opus, the models would very often change the corrected sentence to fit the extra information instead of seeing it as noise
 
 In a nutshell: the models optimize for a "most natural native sentence" rather than "closest fix to what the learner wrote."
@@ -79,6 +82,7 @@ Results are saved to timestamped JSON files under `evaluation/`. Four runs were 
 ### Results Summary
 
 The table below showcases the best performing model for each language in each iteration.
+
 | Language   | Iteration 1 | Iteration 2 | Iteration 3 | Iteration 4 |
 |------------|-------------|-------------|-------------|-------------|
 | Chinese    | Opus        | Opus        | Opus        | Sonnet      |
@@ -89,15 +93,16 @@ The table below showcases the best performing model for each language in each it
 | Japanese   | Haiku       | Haiku       | Haiku       | Haiku       |
 
 Performance here = the best tradeoff between cost, latency, and accuracy.
-Across the board, the best is Haiku. That's because, except for Chinese, Sonnet's and Opus' feedbacks were essentially the same as Haiku's. Given how much slower and expensive they are, Haiku stands as the best option. It is not the best 100% of the time, but often enough to be preferrable over the other alternatives.
+Across the board, the best is Haiku. That's because, except for Chinese, Sonnet's and Opus' feedback were essentially the same as Haiku's. Given how much slower and expensive they are, Haiku stands as the best option. It is not the best 100% of the time, but often enough to be preferable over the other alternatives.
+I believe that this agent already works well if the goal is learning at the beginner and intermediate levels. Any improvements would mainly benefit advanced learners.
 
 ## Test Suite
 
 Three test modules, all under `tests/`:
 
-- **`test_schema.py`** — validates request and response schemas against both the provided sample inputs and the candidate inputs. No API key required.
-- **`test_feedback_unit.py`** — unit tests that mock the Anthropic client. Tests that the feedback logic correctly parses model responses and returns the expected structure. No API key required.
-- **`test_feedback_integration.py`** — 10 tests that make real API calls. 4 cover the original sample languages (Spanish, German, French, Japanese). 6 are based on `examples/candidate_inputs.json` and cover Chinese, Portuguese, Korean, Russian, German, and Japanese — including non-Latin scripts and one correct sentence to test the `is_correct=true` path. The answer key for these sentences was manually verified where possible; thorough verification of non-Latin scripts would require a human linguistic expert, ideally a language educator.
+- **`test_schema.py`**: validates request and response schemas against both the provided sample inputs and the candidate inputs. No API key required.
+- **`test_feedback_unit.py`**: unit tests that mock the Anthropic client. Tests that the feedback logic correctly parses model responses and returns the expected structure. No API key required.
+- **`test_feedback_integration.py`**: 10 tests that make real API calls. 4 cover the original sample languages (Spanish, German, French, Japanese). 6 are based on `examples/candidate_inputs.json` and cover Chinese, Portuguese, Korean, Russian, German, and Japanese, including non-Latin scripts and one correct sentence to test the `is_correct=true` path. The answer key for these sentences was manually verified where possible; thorough verification of non-Latin scripts would require a human linguistic expert, ideally a language educator.
 
 ## How to Run
 
